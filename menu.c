@@ -14,6 +14,8 @@ int menuGestor() {
 	printf("7 - Listar gestores\n");
 	printf("8 - Alterar dados de um dos meios\n");
 	printf("9 - Lista dos clientes\n");
+	printf("10 - Remover cliente\n");
+	printf("11 - Ver localizacao\n");
 	printf("0 - Sair\n");
 	printf("Introduza a opcao:");
 	scanf("%d", &opcao);
@@ -29,6 +31,7 @@ int menuCliente() {
 	printf("1 - Listar meios\n");
 	printf("2 - Listagem dos meios por ordem de decrescente de autonomia\n");
 	printf("3 - Alugar meios\n");
+	printf("4 - Ver localizacao\n");
 	printf("0 - Sair\n");
 	printf("Introduza a opcao:");
 	scanf("%d", &opcao);

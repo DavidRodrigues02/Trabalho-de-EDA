@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include<string.h>
 #include "meio.h"
-#include "clientes.h"
+#include "ClientesGestores.h"
 #include "autenticacao.h"
 #include "menu.h"
 
@@ -28,7 +28,7 @@ int main() {
 
 	int escolha, opcao, cod, pin, nif, bool;
 	float bat, aut, saldo;
-	char tipo[50], nomeGe[50], nomeCl[50], est[20], morada[50];
+	char tipo[50], nomeGe[50], nomeCl[50], est[20], morada[50], loc[50];
 
 	do {
 		printf("A U T E N T I C A C A O\n");
@@ -55,13 +55,17 @@ int main() {
 						scanf("%f", &bat);
 						printf("Autonomia:\n ");
 						scanf("%f", &aut);
-						printf("Disponivel ou Alugado ?");
+						printf("Disponivel ou Alugado ?\n");
 						getchar();
-						gets(est); 
+						gets(est);
+						printf("Localizacao ? (nome-nome-nome)\n");
+						getchar();
+						gets(loc);
 
-						meios = novoMeio(meios, cod, tipo, bat, aut, est);
+						meios = novoMeio(meios, cod, tipo, bat, aut, est, loc);
 						break;
-					case 2:  printf("Codigo do meio que pretende remover: ");
+					case 2: listarMeios(meios); 
+						printf("Codigo do meio que pretende remover: ");
 						scanf("%d", &cod);
 						meios = RemoverMeio(meios, cod);
 						break;
@@ -83,21 +87,16 @@ int main() {
 						break;
 					case 7: listarGestores(gestores); break;
 					case 8: listarMeios(meios);
-						printf("Introduza o codigo:\n ");
-						scanf("%d", &cod);
-						printf("Tipo de meio: \n");
-						getchar();
-						gets(tipo);
-						printf("Nivel de bateria:\n ");
-						scanf("%f", &bat);
-						printf("Autonomia:\n ");
-						scanf("%f", &aut);
-						printf("Disponivel ou Alugado ?");
-						getchar();
-						gets(est); 
-
-						alterarDados(meios, cod, tipo, bat, aut, est);
-					case 9: listarClientes(clientes);
+						alterarDados(meios); 
+						break;
+					case 9: listarClientes(clientes); break;
+					case 10: printf("Insira o NIF do cliente que pretende remover: \n");
+						scanf("%d", &nif);
+						RemoverCliente(clientes, nif); 
+						break;
+					case 11: localizacao(meios);
+						break;
+					default: printf("Numero invalido\n");
 					}
 				} while (opcao != 0);
 			}
@@ -112,6 +111,7 @@ int main() {
 					case 1:listarMeios(meios); break;
 					case 2: ordemDecrescente(); break;
 					case 3: alugarMeio(meios); break;
+					case 4: localizacao(meios); break;
 					}
 				} while (opcao != 0);
 			}
@@ -136,6 +136,7 @@ int main() {
 					case 1: listarMeios(meios); break;
 					case 2: ordemDecrescente(); break;
 					case 3: alugarMeio(meios); break;
+					case 4: localizacao(meios); break;
 					}
 				} while (opcao != 0);
 			

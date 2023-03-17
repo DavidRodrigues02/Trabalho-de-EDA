@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "autenticacao.h"
-#include "clientes.h"
+#include "ClientesGestores.h"
 
 // AUTENICAÇÃO PARA CLIENTES
 
