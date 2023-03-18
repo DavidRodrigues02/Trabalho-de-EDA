@@ -1,14 +1,16 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "meio.h"
+#include "ClientesGestores.h"
 
 void listarMeios(Meio* inicio)
 {
 	while (inicio != NULL)
 	{
-		printf("%d %s %.2f %.2f %s\n", inicio->codigo, inicio->tipo,
-			inicio->bateria, inicio->autonomia, inicio->estado);
+		printf("%d %s %.2f %.2f %.2f %s %s\n", inicio->codigo, inicio->tipo,
+			inicio->bateria, inicio->autonomia, inicio->custo, inicio->localizacao, inicio->estado);
 		inicio = inicio->seguinte;
 	}
 }
@@ -25,7 +27,7 @@ int existeMeio(Meio* inicio, int cod)
 }
 
 
-Meio* novoMeio(Meio* inicio, int cod, char tipo[], float bat, float aut, char est[])
+Meio* novoMeio(Meio* inicio, int cod, char tipo[], float bat, float aut, char est[], char loc[], float custo)
 {
 	if (!existeMeio(inicio, cod))
 	{
@@ -36,6 +38,8 @@ Meio* novoMeio(Meio* inicio, int cod, char tipo[], float bat, float aut, char es
 			strcpy(novo->tipo, tipo);
 			novo->bateria = bat;
 			novo->autonomia = aut;
+			novo->custo = custo;
+			strcpy(novo->localizacao, loc);
 			strcpy(novo->estado, est);
 			novo->seguinte = inicio;
 			return(novo);
@@ -72,30 +76,57 @@ Meio* RemoverMeio(Meio* inicio, int cod) {
 
 
 
-/*void changeNode(int element, int index)
-{
-    struct list *current = head;
-    int count = 0;
-    while(count != index)
-    {
-        if(current->next)
-            current = current->next;
-        count++;
-    }
-    current->data = element;
-}*/
-
 
 // procurar o node pretendido e alterar os dados dentro dele
-Meio* alterarDados(Meio* inicio, int cod, char tipo[], float bat, float aut, char est[]) {
+Meio* alterarDados(Meio* inicio) {
 	Meio* atual = inicio;
 
+	int cod, opcao; 
+	float bat, aut, custo;
+	char tipo[50], est[50], loc[50];
+
+	printf("Insira o codigo do meio que prentende alterar dados: \n");
+	scanf("%d", &cod); 
+
+	
 	if (atual == NULL) return(NULL);
 	else if (atual->codigo == cod) {   // caso o header tenha o codigo introduzido
-		strcpy(atual->tipo, tipo);
-		atual->bateria = bat;
-		atual->autonomia = aut;
-		strcpy(atual->estado, est);
+		do {
+			printf("1 - Tipo\n2 - Bateria\n3 - Autonomia\n 4 - Custo\n5 - Estado\n6 - Localizacao\n0 - Sair\n");
+			printf("Escolha a opcao : \n");
+			scanf("%d", &opcao);
+
+			switch (opcao) {
+			case 1: printf("Novo tipo: ");
+				getchar();  
+				gets(tipo); 
+				strcpy(atual->tipo, tipo);
+				break;
+			case 2: printf("Bateria: ");
+				scanf("%f", &bat);
+				atual->bateria = bat;
+				break;
+			case 3: printf("Autonomia: ");
+				scanf("%f", &aut);
+				atual->autonomia = aut;
+				break;
+			case 4: printf("Custo: ");
+				scanf("%f", &custo);
+				atual->custo = custo;
+				break;
+			case 5: printf("Novo estado do meio: ");
+				getchar();
+				gets(est);
+				strcpy(atual->estado, est);
+				break;
+			case 6: printf("Nova localizacao do meio: ");
+				getchar();
+				gets(loc);
+				strcpy(atual->localizacao, loc);
+				break;
+			}
+		} while (opcao != 0);
+		
 	}
 	else {
 		while ((atual != NULL) && (atual->codigo != cod)) {   // para encontrar o codigo introduzido
@@ -103,10 +134,42 @@ Meio* alterarDados(Meio* inicio, int cod, char tipo[], float bat, float aut, cha
 		}
 		if (atual == NULL) return(inicio);
 		else {
-			strcpy(atual->tipo, tipo);
-			atual->bateria = bat;
-			atual->autonomia = aut;
-			strcpy(atual->estado, est);
+			do {
+				printf("1 - Tipo\n2 - Bateria\n3 - Autonomia\n4 - Custo\n5 - Estado\n6 - Localizacao\n0 - Sair\n");
+				printf("Escolha a opcao : \n");
+				scanf("%d", &opcao);
+
+		 		switch (opcao) {
+		 		case 1: printf("Novo tipo: ");
+		 			getchar();
+		 			gets(tipo);
+		 			strcpy(atual->tipo, tipo);
+					break;
+		 		case 2: printf("Bateria: ");
+		 			scanf("%f", &bat);
+		 			atual->bateria = bat;
+					break;
+				case 3: printf("Autonomia: ");
+		 			scanf("%f", &aut);
+		 			atual->autonomia = aut;
+					break;
+				case 4: printf("Custo: "),
+					scanf("%f", &custo);
+					atual->custo = custo;
+					break;
+		 		case 5: printf("Novo estado do meio: ");
+		 			getchar();
+		 			gets(est);
+		 			strcpy(atual->estado, est);
+					break;
+		 		case 6: printf("Nova localizacao do meio: ");
+		 			getchar();
+	  				gets(loc);
+	 				strcpy(atual->localizacao, loc);
+					break;
+	 			}
+	 		} while (opcao != 0);
+
 		}
 	}
 	FicheiroMeios(atual);
@@ -122,7 +185,7 @@ int FicheiroMeios(Meio* inicio) {
 		Meio* aux = inicio;
 
 		while (aux != NULL) {
-			fprintf(fp, "%d;%s;%f;%f;%s\n", aux->codigo, aux->tipo, aux->bateria, aux->autonomia, aux->estado);
+			fprintf(fp, "%d;%s;%f;%f;%.2f;%s;%s\n", aux->codigo, aux->tipo, aux->bateria, aux->autonomia, aux->custo, aux->localizacao, aux->estado);
 			aux = aux->seguinte;
 		}
 		fclose(fp);
@@ -132,44 +195,14 @@ int FicheiroMeios(Meio* inicio) {
 	else return(0);
 }
 
-/*Meio* lerMeios()
-{
- 	FILE* fp; 
-	int cod; 
- 	float bat, aut;
- 	char tipo[50], est[30];
- 	Meio* aux = NULL;
-	Meio* novo =malloc(sizeof(struct registo));  
- 	fp = fopen("meios.txt", "r");
- 	if (fp != NULL)
-	{
-		while (fscanf(fp, "%d;%f;%f;%[^;];%s\n", &cod, &bat, &aut, tipo, est) == 5)
-		{
-			novo->codigo = cod;
-			strcpy(novo->tipo, tipo);
-			novo->bateria = bat;
-			novo->autonomia = aut;
-			strcpy(novo->estado, est);
-			novo->seguinte = aux;
-			aux = novo;
-
-		}
-		 
-	}
-	else {
-		printf("Erro ao abrir ficheiro.");
-	}
-	fclose(fp);
-	return aux;
-}*/
 
 
 Meio* lerMeios()
 {
 	FILE* fp;
 	int cod;
-	float bat, aut;
-	char tipo[50], est[30];
+	float bat, aut, custo;
+	char tipo[50], est[30], loc[50];
 	Meio* aux = NULL;
 	Meio* novo;
 	
@@ -179,7 +212,7 @@ Meio* lerMeios()
 		return NULL;
 	}
 
-	while (fscanf(fp, "%d;%[^;];%f;%f;%s\n", &cod, tipo, &bat, &aut, est) == 5)   
+	while (fscanf(fp, "%d;%[^;];%f;%f;%f;%[^;];%s\n", &cod, tipo, &bat, &aut, &custo, loc, est) == 7)     
 	{	
 		novo = malloc(sizeof(Meio));
 		if (novo == NULL) {
@@ -190,6 +223,7 @@ Meio* lerMeios()
 		strcpy(novo->tipo, tipo);
 		novo->bateria = bat;
 		novo->autonomia = aut;
+		strcpy(novo->localizacao, loc);
 		strcpy(novo->estado, est);
 		novo->seguinte = aux;
 		aux = novo;
@@ -198,37 +232,6 @@ Meio* lerMeios()
 	return aux;
 }
 
-
-/*void reverseOrder() {
-	struct temp aux;
-	int size, i = 0, j;
-	char ch;
-
-	FILE* fp;
-	fp = fopen("meios.txt", "r");
-
-	if (fp != NULL) {
-		while (!feof(fp)) {
-			fscanf(fp, "%d;%s;%f;%f", &arr[i].codigo, arr[i].tipo, arr[i].bateria, arr[i].autonomia);
-			ch = fgetc(fp);
-			i++;
-		}
-		size = i - 1;
-
-		for (i = 0; i < (size - 1); i++) {
-			for (j = 0; j < size - i - 1; j++) {
-				if (arr[j].autonomia < arr[j + 1].autonomia) {
-					aux = arr[j];
-					arr[j] = arr[j + 1];
-					arr[j + 1] = aux;
-				}
-			}
-		}
-	}
-	for (i = 0; i < size; i++) {
-		printf("%d;%s;%f;%f\n", arr[i].codigo, arr[i].tipo, arr[i].bateria, arr[i].autonomia);
-	}
-}*/
 
 
 void ordemDecrescente() {
@@ -244,7 +247,7 @@ void ordemDecrescente() {
 
 	if (fp != NULL) {
 		while (!feof(fp)) {
-			fscanf(fp, "%d;%f;%f;%[^;];%s", &array[i].codigo, &array[i].bateria, &array[i].autonomia, array[i].tipo, array[i].estado);
+			fscanf(fp, "%d;%[^;];%f;%f;%f;%[^;];%s", &array[i].codigo, array[i].tipo, &array[i].bateria, &array[i].autonomia, array[i].custo, array[i].localizacao, array[i].estado);
 			ch = fgetc(fp);
 			i++;
 		}
@@ -265,7 +268,7 @@ void ordemDecrescente() {
 
 
 	for (i = 0; i < size; i++) {
-		printf("%d;%s;%02.f;%02.f;%s\n", array[i].codigo, array[i].tipo, array[i].bateria, array[i].autonomia, array[i].estado);
+		printf("%d;%s;%.2f;%.2f;%.2f;%s;%s\n", array[i].codigo, array[i].tipo, array[i].bateria, array[i].autonomia, array[i].custo, array[i].localizacao, array[i].estado);
 	}
 }
 
@@ -288,7 +291,7 @@ int ficheiroBinario(Meio* inicio) {
 }
 
 
-void alugarMeio(Meio*  inicio) {
+void alugarMeio(Meio*  inicio, Cliente* begin, int nif) {
 	Meio* atual = inicio; 
  	int cod;
   
@@ -301,7 +304,16 @@ void alugarMeio(Meio*  inicio) {
 		else if (atual->codigo == cod) {   // caso o header tenha o codigo introduzido
 			strcpy(atual->estado, "Alugado");
 			
+			if (begin == NULL) return(NULL);
+			else {
+				while ((begin != NULL) && (begin->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
+					begin = begin->seguinte;
+				}
+				begin->saldo = begin->saldo - atual->custo; 
+			}
+
 		}
+
 		else {
 			while ((atual != NULL) && (atual->codigo != cod)) {   // para encontrar o codigo introduzido
 				atual = atual->seguinte; 
@@ -310,10 +322,38 @@ void alugarMeio(Meio*  inicio) {
 			else {
 				strcpy(atual->estado, "Alugado");
 				
+				if (begin == NULL) return(NULL);
+				else {
+					while ((begin != NULL) && (begin->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
+						begin = begin->seguinte;
+					}
+					begin->saldo = begin->saldo - atual->custo; 
+				}
+
 			}
 		}
 		
 	}
 	else printf("Codigo Errado!");
-	
+	FicheiroClientes(begin); 
 }
+
+
+void localizacao(Meio* inicio) {
+	char loc[50], b = 1;
+
+	printf("Introduza a localizacao que pretende: \n");
+	getchar();
+	gets(loc);
+
+	while (inicio != NULL) {
+		if (strcmp(inicio->localizacao, loc) == 0) {
+			printf("%s\n", inicio->tipo);
+			b = 0;
+		}
+		inicio = inicio->seguinte;
+	}
+	if (b == 1) printf("Nenhum meio encontrado na localizacao pretendida");
+}
+
+

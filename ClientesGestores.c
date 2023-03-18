@@ -116,26 +116,28 @@ int ficheiroBinarioCl(Cliente* inicio) {
 
 
 
-Cliente* RemoverCliente(Cliente* inicio, int nif) {
-	Cliente* anterior = inicio, * atual = inicio, * aux;
+Cliente* RemoverCliente(Cliente *inicio, int nif) {
+	Cliente* anterior = inicio, *atual = inicio, *aux;
+	
+	if (inicio == NULL) return(NULL);
+	else if (inicio->nif == nif) {  //remove o primeiro node caso este tenha o codigo desejado
+		aux = inicio;
+		inicio = inicio->seguinte;
+		free(aux);  
+		return(inicio);  
 
-	if (atual == NULL) return(NULL);
-	else if (atual->nif == nif) {  //remove o primeiro node caso este tenha o codigo desejado
-		aux = atual->seguinte;
-		free(atual);
-		return(aux);
 	}
 	else {
-		while ((atual != NULL) && (atual->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
-			anterior = atual;
-			atual = atual->seguinte;
+		while ((inicio != NULL) && (inicio->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
+			anterior = inicio;
+			inicio = inicio->seguinte; 
 		}
 
-		if (atual == NULL) return(inicio);
+		if (inicio == NULL) return(inicio);
 		else {
-			anterior->seguinte = atual->seguinte; //mete o pointer do campo "seguinte" do node "anterior"
-			free(atual);                          // a apontar para o node a seguir ao node "atual" e elimina o node central
-			return(inicio);
+			anterior->seguinte = inicio->seguinte; //mete o pointer do campo "seguinte" do node "anterior"
+			free(inicio);                          // a apontar para o node a seguir ao node "atual" e elimina o node central
+			return(anterior);
 		}
 	}
 
@@ -317,3 +319,4 @@ Gestores* lerGestores()
 	fclose(fp);
 	return aux;
 }
+

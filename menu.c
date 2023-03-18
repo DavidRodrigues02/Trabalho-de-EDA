@@ -4,7 +4,7 @@
 int menuGestor() {
 	int opcao;
 
-	printf("M E N U   G E S T O R\n");
+	printf("\nM E N U   G E S T O R\n");
 	printf("1 - Adicionar novo meio\n");
 	printf("2 - Remover meio\n");
 	printf("3 - Guardar meios num ficheiro de texto e binario\n");
@@ -27,7 +27,7 @@ int menuGestor() {
 int menuCliente() {
 	int opcao;
 
-	printf("M E N U   C L I E N T E\n");
+	printf("\nM E N U   C L I E N T E\n");
 	printf("1 - Listar meios\n");
 	printf("2 - Listagem dos meios por ordem de decrescente de autonomia\n");
 	printf("3 - Alugar meios\n");

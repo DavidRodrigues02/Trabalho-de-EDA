@@ -27,11 +27,11 @@ int main() {
 	
 
 	int escolha, opcao, cod, pin, nif, bool;
-	float bat, aut, saldo;
+	float bat, aut, saldo, custo;
 	char tipo[50], nomeGe[50], nomeCl[50], est[20], morada[50], loc[50];
 
 	do {
-		printf("A U T E N T I C A C A O\n");
+		printf("\tA U T E N T I C A C A O\n");
 		printf("1. Inicio de sessao para gestores\n");
 		printf("2. Inicio de sessao para clientes\n");
 		printf("3. Registo de novo cliente\n");
@@ -46,7 +46,7 @@ int main() {
 				do {
 					opcao = menuGestor();
 					switch (opcao) {
-					case 1: printf("Introduza o codigo:\n ");
+					case 1: printf("\nIntroduza o codigo:\n ");
 						scanf("%d", &cod);
 						printf("Tipo de meio: \n");
 						getchar();
@@ -55,6 +55,8 @@ int main() {
 						scanf("%f", &bat);
 						printf("Autonomia:\n ");
 						scanf("%f", &aut);
+						printf("Custo:\n");
+						scanf("%f", &custo); 
 						printf("Disponivel ou Alugado ?\n");
 						getchar();
 						gets(est);
@@ -62,7 +64,7 @@ int main() {
 						getchar();
 						gets(loc);
 
-						meios = novoMeio(meios, cod, tipo, bat, aut, est, loc);
+						meios = novoMeio(meios, cod, tipo, bat, aut, est, loc, custo);
 						break;
 					case 2: listarMeios(meios); 
 						printf("Codigo do meio que pretende remover: ");
@@ -92,7 +94,7 @@ int main() {
 					case 9: listarClientes(clientes); break;
 					case 10: printf("Insira o NIF do cliente que pretende remover: \n");
 						scanf("%d", &nif);
-						RemoverCliente(clientes, nif); 
+						clientes = RemoverCliente(clientes, nif); 
 						break;
 					case 11: localizacao(meios);
 						break;
@@ -103,14 +105,16 @@ int main() {
 			else printf("PIN errado!\n");
 			break;
 
-		case 2: bool = loginCliente(clientes); 
+		case 2: printf("Introduza o NIF: \n");
+			scanf("%d", &nif);
+			bool = loginCliente(clientes, nif); 
 			if (bool) {
 				do {
 					opcao = menuCliente();
 					switch (opcao) {
 					case 1:listarMeios(meios); break;
 					case 2: ordemDecrescente(); break;
-					case 3: alugarMeio(meios); break;
+					case 3: alugarMeio(meios, clientes, nif); break;
 					case 4: localizacao(meios); break;
 					}
 				} while (opcao != 0);
@@ -129,13 +133,13 @@ int main() {
 			gets(morada); 
 
 			clientes = novoCliente(clientes, nif, saldo, nomeCl, morada); 
-			
+			FicheiroClientes(clientes);
 				do {
 					opcao = menuCliente();
 					switch (opcao) {
 					case 1: listarMeios(meios); break;
 					case 2: ordemDecrescente(); break;
-					case 3: alugarMeio(meios); break;
+					case 3: alugarMeio(meios, clientes, nif); break;
 					case 4: localizacao(meios); break;
 					}
 				} while (opcao != 0);
