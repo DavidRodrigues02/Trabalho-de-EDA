@@ -7,12 +7,9 @@
 
 // AUTENICAÇÃO PARA CLIENTES
 
-int loginCliente(Cliente* inicio) {
+int loginCliente(Cliente* inicio, int nif) {
 
-	int nif, boolean;
-
-	printf("Introduza o seu nif para iniciar sessao: ");
-	scanf("%d", &nif);
+	int boolean;
 
 	boolean = existeCliente(inicio, nif);
 	
