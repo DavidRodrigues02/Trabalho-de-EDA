@@ -32,6 +32,7 @@ int menuCliente() {
 	printf("2 - Listagem dos meios por ordem de decrescente de autonomia\n");
 	printf("3 - Alugar meios\n");
 	printf("4 - Ver localizacao\n");
+	printf("5 - Alterar os seus dados\n");
 	printf("0 - Sair\n");
 	printf("Introduza a opcao:");
 	scanf("%d", &opcao);
