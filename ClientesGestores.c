@@ -41,7 +41,7 @@ Cliente* novoCliente(Cliente* inicio, int nif, float saldo, char nome[], char mo
 			return(novo);
 		}
 	}
-	else return(inicio);
+	else  return(inicio);
 }
 
 
@@ -144,14 +144,12 @@ Cliente* RemoverCliente(Cliente *inicio, int nif) {
 }
 
 
-Cliente* alterarDadosCl(Cliente* inicio) {
+Cliente* alterarDadosCl(Cliente* inicio, int nif) {
 	Cliente* atual = inicio;
-	int nif, opcao;
+	int opcao;
 	float saldo;
 	char nome[50], morada[50];
 
-	printf("Insira o NIF do cliente que prentende alterar dados: \n");
-	scanf("%d", &nif);
 	
 	if (atual == NULL) return(NULL);
 	else if (atual->nif == nif) {   // caso o header tenha o codigo introduzido

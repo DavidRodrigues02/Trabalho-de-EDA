@@ -313,7 +313,6 @@ void alugarMeio(Meio*  inicio, Cliente* begin, int nif) {
 			}
 
 		}
-
 		else {
 			while ((atual != NULL) && (atual->codigo != cod)) {   // para encontrar o codigo introduzido
 				atual = atual->seguinte; 
@@ -329,7 +328,7 @@ void alugarMeio(Meio*  inicio, Cliente* begin, int nif) {
 					}
 					begin->saldo = begin->saldo - atual->custo; 
 				}
-
+				begin->saldo = begin->saldo - atual->custo;
 			}
 		}
 		

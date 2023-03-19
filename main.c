@@ -61,10 +61,11 @@ int main() {
 						getchar();
 						gets(est);
 						printf("Localizacao ? (nome-nome-nome)\n");
-						getchar();
+						//getchar();
 						gets(loc);
 
 						meios = novoMeio(meios, cod, tipo, bat, aut, est, loc, custo);
+						FicheiroMeios(meios);
 						break;
 					case 2: listarMeios(meios); 
 						printf("Codigo do meio que pretende remover: ");
@@ -83,6 +84,7 @@ int main() {
 						printf("Introduza o PIN que deseja utilizar: ");
 						scanf("%d", &pin);
 						gestores = novoGestor(gestores, nomeGe, pin);
+						FicheiroGestores(gestores);
 						break;
 					case 6: FicheiroGestores(gestores);
 						ficheiroBinarioGe(gestores);
@@ -98,7 +100,6 @@ int main() {
 						break;
 					case 11: localizacao(meios);
 						break;
-					default: printf("Numero invalido\n");
 					}
 				} while (opcao != 0);
 			}
@@ -116,6 +117,7 @@ int main() {
 					case 2: ordemDecrescente(); break;
 					case 3: alugarMeio(meios, clientes, nif); break;
 					case 4: localizacao(meios); break;
+					case 5: alterarDadosCl(clientes, nif);
 					}
 				} while (opcao != 0);
 			}
@@ -129,11 +131,14 @@ int main() {
 			getchar();
 			gets(nomeCl); 
 			printf("Escreva a sua morada: ");
-			getchar();
+			//getchar();
 			gets(morada); 
 
-			clientes = novoCliente(clientes, nif, saldo, nomeCl, morada); 
-			FicheiroClientes(clientes);
+			bool = existeCliente(clientes, nif);
+			if (bool == 0) {
+				clientes = novoCliente(clientes, nif, saldo, nomeCl, morada);
+				FicheiroClientes(clientes);
+
 				do {
 					opcao = menuCliente();
 					switch (opcao) {
@@ -143,7 +148,8 @@ int main() {
 					case 4: localizacao(meios); break;
 					}
 				} while (opcao != 0);
-			
+			}
+			else printf("NIF ja existe\n");
 			break;
 		}
 	} while (escolha != 0);
