@@ -13,34 +13,58 @@ typedef struct registo
 } Meio;
 
 
-
-// Listar todos meios existentes
+/**
+*  Listar todos meios existentes na lista
+*/
 void listarMeios(Meio* inicio);
 
-// Verifica se já existe meio 
+/**
+*  Verifica se já existe um determinado meio na lista
+* a partir do código introduzido pelo utilizador
+*/ 
 int existeMeio(Meio* inicio, int codigo);
 
-// Acrescentar novos meios
+/**
+*  Insere novos meios na lista recebendo dados inseridos pelo gestor
+*/
 Meio* novoMeio(Meio* inicio, int cod, char tipo[], float bat, float aut, char est[], char loc[], float custo);
 
-// Remover meio
+/**
+*  Recebe o código do meio e remove-o da lista
+*/
 Meio* RemoverMeio(Meio* inicio, int cod);
 
-// Alterar dados
+/**
+*  Função para alterar os dados de algum dos meios existentes
+*/
 Meio* alterarDados(Meio* inicio);
 
-// Criar ficheiro
+/**
+*  Cria ficheiro de texto dos meios
+*/ 
 int FicheiroMeios(Meio* inicio);
 
-// Ler ficheiro
+/**
+*  Ler ficheiro de texto para a lista
+*/ 
 Meio* lerMeios();
 
-// Ordem decrescente
+/**
+*  Ordem decrescente dos meios segundo a sua autonomia
+*/ 
 void ordemDecrescente();
 
-// Criar ficheiro binário dos meios
+/**
+*  Cria ficheiro binário dos meios
+*/
 int ficheiroBinario(Meio* inicio);
 
+/**
+*  Alugar meio e retirar o custo do veiculo ao saldo da conta do cliente
+*/
 void alugarMeio(Meio* inicio, Cliente* begin, int nif);
 
+/**
+*  Procurar meios numa determinada localização 
+*/
 void localizacao(Meio* inicio);
