@@ -91,7 +91,7 @@ int main() {
 						break;
 					case 7: listarGestores(gestores); break;
 					case 8: listarMeios(meios);
-						alterarDados(meios); 
+						meios = alterarDados(meios);  
 						break;
 					case 9: listarClientes(clientes); break;
 					case 10: printf("Insira o NIF do cliente que pretende remover: \n");
@@ -100,6 +100,7 @@ int main() {
 						break;
 					case 11: localizacao(meios);
 						break;
+					case 12: listarMeios(meios); break;
 					}
 				} while (opcao != 0);
 			}
@@ -117,7 +118,7 @@ int main() {
 					case 2: ordemDecrescente(); break;
 					case 3: alugarMeio(meios, clientes, nif); break;
 					case 4: localizacao(meios); break;
-					case 5: alterarDadosCl(clientes, nif);
+					case 5: clientes = alterarDadosCl(clientes, nif); break;
 					}
 				} while (opcao != 0);
 			}
@@ -146,10 +147,11 @@ int main() {
 					case 2: ordemDecrescente(); break;
 					case 3: alugarMeio(meios, clientes, nif); break;
 					case 4: localizacao(meios); break;
+					case 5: clientes = alterarDadosCl(clientes, nif); break;
 					}
 				} while (opcao != 0);
 			}
-			else printf("NIF ja existe\n");
+			else printf("NIF ja existe!!\n");
 			break;
 		}
 	} while (escolha != 0);

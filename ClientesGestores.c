@@ -99,7 +99,7 @@ int FicheiroClientes(Cliente* inicio) {
 
 int ficheiroBinarioCl(Cliente* inicio) {
 	FILE* fp;
-	fp = fopen("clientesBinario", "wb");
+	fp = fopen("clientesBinario.bin", "wb");
 
 	if (fp != NULL) {
 		Cliente* aux = inicio;
@@ -162,7 +162,7 @@ Cliente* alterarDadosCl(Cliente* inicio, int nif) {
 			switch (opcao) {
 
 			case 1: printf("Insira o novo saldo: \n");
-				scanf("%d", &saldo);
+				scanf("%f", &saldo);
 				atual->saldo = saldo;
 				break;
 			case 2: printf("Insira o novo nome: \n");
@@ -192,7 +192,7 @@ Cliente* alterarDadosCl(Cliente* inicio, int nif) {
 
 				switch (opcao) {
 				case 1: printf("Insira o novo saldo: ");
-					scanf("%d", &saldo);
+					scanf("%f", &saldo);
 					atual->saldo = saldo;
 					break;
 				case 2: printf("Insira o novo nome: ");
@@ -262,7 +262,7 @@ int FicheiroGestores(Gestores* inicio) {
 
 int ficheiroBinarioGe(Gestores* inicio) {
 	FILE* fp;
-	fp = fopen("gestoresBinario", "wb");
+	fp = fopen("gestoresBinario.bin", "wb");
 
 	if (fp != NULL) {
 		Gestores* aux = inicio; 

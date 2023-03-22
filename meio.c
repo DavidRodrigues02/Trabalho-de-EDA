@@ -223,6 +223,7 @@ Meio* lerMeios()
 		strcpy(novo->tipo, tipo);
 		novo->bateria = bat;
 		novo->autonomia = aut;
+		novo->custo = custo;
 		strcpy(novo->localizacao, loc);
 		strcpy(novo->estado, est);
 		novo->seguinte = aux;
@@ -247,7 +248,7 @@ void ordemDecrescente() {
 
 	if (fp != NULL) {
 		while (!feof(fp)) {
-			fscanf(fp, "%d;%[^;];%f;%f;%f;%[^;];%s", &array[i].codigo, array[i].tipo, &array[i].bateria, &array[i].autonomia, array[i].custo, array[i].localizacao, array[i].estado);
+			fscanf(fp, "%d;%[^;];%f;%f;%f;%[^;];%s", &array[i].codigo, array[i].tipo, &array[i].bateria, &array[i].autonomia, &array[i].custo, array[i].localizacao, array[i].estado);
 			ch = fgetc(fp);
 			i++;
 		}
@@ -275,7 +276,7 @@ void ordemDecrescente() {
 
 int ficheiroBinario(Meio* inicio) {
 	FILE* fp;
-	fp = fopen("meiosBinario", "wb");
+	fp = fopen("meiosBinario.bin", "wb");
 
 	if (fp != NULL) {
 		Meio* aux = inicio;
@@ -301,17 +302,23 @@ void alugarMeio(Meio*  inicio, Cliente* begin, int nif) {
 
 	if (existeMeio(atual, cod)) {
 		if (atual == NULL) return(NULL); 
-		else if (atual->codigo == cod) {   // caso o header tenha o codigo introduzido
-			strcpy(atual->estado, "Alugado");
-			
-			if (begin == NULL) return(NULL);
-			else {
-				while ((begin != NULL) && (begin->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
-					begin = begin->seguinte;
-				}
-				begin->saldo = begin->saldo - atual->custo; 
-			}
+		else if ((atual->codigo == cod)) {   // caso o header tenha o codigo introduzido
+			if (strcmp(atual->estado, "Alugado") == 1) {
 
+				strcpy(atual->estado, "Alugado");
+
+				if (begin == NULL) return(NULL);
+				else {
+					while ((begin != NULL) && (begin->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
+						begin = begin->seguinte;
+					}
+					begin->saldo = begin->saldo - atual->custo;
+
+				}
+				FicheiroClientes(begin); 
+				FicheiroMeios(inicio); 
+			}
+			else printf("Meio ja alugado!\n");
 		}
 		else {
 			while ((atual != NULL) && (atual->codigo != cod)) {   // para encontrar o codigo introduzido
@@ -319,22 +326,29 @@ void alugarMeio(Meio*  inicio, Cliente* begin, int nif) {
 			}
 			if (atual == NULL) return(inicio);
 			else {
-				strcpy(atual->estado, "Alugado");
-				
-				if (begin == NULL) return(NULL);
-				else {
-					while ((begin != NULL) && (begin->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
-						begin = begin->seguinte;
+				if (strcmp(atual->estado, "Alugado") == 1) {
+
+					strcpy(atual->estado, "Alugado");
+
+					if (begin == NULL) return(NULL);
+					else {
+						while ((begin != NULL) && (begin->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
+							begin = begin->seguinte;
+						}
+						begin->saldo = begin->saldo - atual->custo;
 					}
-					begin->saldo = begin->saldo - atual->custo; 
+					
+					FicheiroClientes(begin); 
+					FicheiroMeios(inicio); 
+					
 				}
-				begin->saldo = begin->saldo - atual->custo;
+				else printf("Meio ja alugado!\n");
 			}
 		}
 		
 	}
 	else printf("Codigo Errado!");
-	FicheiroClientes(begin); 
+
 }
 
 
