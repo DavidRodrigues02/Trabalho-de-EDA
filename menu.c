@@ -16,6 +16,7 @@ int menuGestor() {
 	printf("9 - Lista dos clientes\n");
 	printf("10 - Remover cliente\n");
 	printf("11 - Ver localizacao\n");
+	printf("12 - Listar meios\n");
 	printf("0 - Sair\n");
 	printf("Introduza a opcao:");
 	scanf("%d", &opcao);
