@@ -47,12 +47,12 @@ int FicheiroMeios(Meio* inicio);
 /**
 *  Ler ficheiro de texto para a lista
 */ 
-Meio* lerMeios();
+Meio* lerMeios(); 
 
 /**
 *  Ordem decrescente dos meios segundo a sua autonomia
 */ 
-void ordemDecrescente();
+void ordemDecrescente(Meio* inicio);
 
 /**
 *  Cria ficheiro binário dos meios
@@ -62,9 +62,12 @@ int ficheiroBinario(Meio* inicio);
 /**
 *  Alugar meio e retirar o custo do veiculo ao saldo da conta do cliente
 */
-void alugarMeio(Meio* inicio, Cliente* begin, int nif);
+void alugarMeio(Meio* inicio, Cliente* begin, int nif, int cod);
 
 /**
 *  Procurar meios numa determinada localização 
 */
 void localizacao(Meio* inicio);
+
+//void revBubblesort(Meio* inicio); 
+//int bubbleSort(struct registo** head, int count);

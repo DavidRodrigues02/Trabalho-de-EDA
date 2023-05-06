@@ -5,12 +5,14 @@
 #include "ClientesGestores.h"
 #include "autenticacao.h"
 #include "menu.h"
+#include "grafo.h"
 
 
 int main() {
 	Meio* meios = NULL; // Lista ligada vazia 
 	Gestores* gestores = NULL;
 	Cliente* clientes = NULL;
+	Grafo g = NULL;
 
 	//meios = novoMeio(meios, 5, "carrinha", 95, 100, "disponivel");
 	//meios = novoMeio(meios, 6, "skate", 28, 20, "disponivel");
@@ -23,9 +25,26 @@ int main() {
 	//clientes = novoCliente(clientes, 123456789, 50, "Paulo", "Lisboa");  
 	//clientes = novoCliente(clientes, 987654321, 80, "Carolina", "Porto"); 
 	clientes = lerClientes();
-	
-	
 
+
+	novoVertice(&g, "palito-some-atum");
+	novoVertice(&g, "moleza-avisou-boiar");
+	novoVertice(&g, "cita-noite-cercam");
+	novoVertice(&g, "farta-parou-ferro");
+
+	criarAresta(g, "palito-some-atum", "moleza-avisou-boiar", 20);
+	criarAresta(g, "palito-some-atum", "farta-parou-ferro", 15);
+	criarAresta(g, "moleza-avisou-boiar", "farta-parou-ferro", 50);
+	criarAresta(g, "moleza-avisou-boiar", "cita-noite-cercam", 40);
+	criarAresta(g, "cita-noite-cercam", "palito-some-atum", 100);
+	criarAresta(g, "farta-parou-ferro", "cita-noite-cercam", 30); 
+
+	//listarAdjacentes(g, "palito-some-atum");
+
+	FicheiroGrafo(g);
+	FicheiroAdjacentes(g);
+	
+	struct registo array[100];
 	int escolha, opcao, cod, pin, nif, bool;
 	float bat, aut, saldo, custo;
 	char tipo[50], nomeGe[50], nomeCl[50], est[20], morada[50], loc[50];
@@ -40,6 +59,7 @@ int main() {
 		scanf("%d", &escolha);
 
 		switch (escolha) {
+			// LOGIN PARA GESTORES
 		case 1:
 			bool = loginGestores(gestores);
 			if (bool) {
@@ -107,6 +127,7 @@ int main() {
 			else printf("PIN errado!\n");
 			break;
 
+			//LOGIN PARA CLIENTES
 		case 2: printf("Introduza o NIF: \n");
 			scanf("%d", &nif);
 			bool = loginCliente(clientes, nif); 
@@ -115,8 +136,14 @@ int main() {
 					opcao = menuCliente();
 					switch (opcao) {
 					case 1:listarMeios(meios); break;
-					case 2: ordemDecrescente(); break;
-					case 3: alugarMeio(meios, clientes, nif); break;
+					case 2: //revBubblesort(meios);
+						ordemDecrescente(meios);    
+						
+						break;
+					case 3:listarMeios(meios); 
+						printf("Introduza o codigo do meio que pretende alugar: \n");
+						scanf("%d", cod);
+						alugarMeio(meios, clientes, nif, cod); break; 
 					case 4: localizacao(meios); break;
 					case 5: clientes = alterarDadosCl(clientes, nif); break;
 					}
@@ -124,6 +151,8 @@ int main() {
 			}
 			else printf("NIF errado!\n");
 			break;
+
+			// REGISTO DE CLIENTES
 		case 3: printf("Introduza o seu NIF: ");
 			scanf("%d", &nif);
 			printf("Introduza a quantidade de saldo com que deseja carregar a conta: ");
@@ -144,8 +173,11 @@ int main() {
 					opcao = menuCliente();
 					switch (opcao) {
 					case 1: listarMeios(meios); break;
-					case 2: ordemDecrescente(); break;
-					case 3: alugarMeio(meios, clientes, nif); break;
+					case 2: ordemDecrescente(meios); break; 
+					case 3: listarMeios(meios);
+						printf("Introduza o codigo do meio que pretende alugar: \n");
+						scanf("%d", cod);
+						alugarMeio(meios, clientes, nif, cod); break;
 					case 4: localizacao(meios); break;
 					case 5: clientes = alterarDadosCl(clientes, nif); break;
 					}

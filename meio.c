@@ -233,44 +233,53 @@ Meio* lerMeios()
 	return aux;
 }
 
-
-
-void ordemDecrescente() {
-	
-	struct registo array[100];
-	struct registo temp;
-
-	int size = 0, i = 0, j;
-	char ch;
-
-	FILE* fp;
-	fp = fopen("meios.txt", "r");
-
-	if (fp != NULL) {
-		while (!feof(fp)) {
-			fscanf(fp, "%d;%[^;];%f;%f;%f;%[^;];%s", &array[i].codigo, array[i].tipo, &array[i].bateria, &array[i].autonomia, &array[i].custo, array[i].localizacao, array[i].estado);
-			ch = fgetc(fp);
-			i++;
-		}
-		size = i - 1;
-
-		for (i = 0; i < (size - 1); i++) {
-			for (j = 0; j < size - i - 1; j++) {
-				if (array[j].autonomia < array[j + 1].autonomia) {
-					temp = array[j];
-					array[j] = array[j + 1];
-					array[j + 1] = temp;
-				}
-			}
-		}
-		fclose(fp);
-	}
-	else printf("Erro ao abrir ficheiro");
-
+void listarArray(struct registo array[], int size) {
+	int i;
+	// size = sizeof(array) / sizeof(array[0]);  
+	// https://www.prepbytes.com/blog/linked-list/bubble-sort-for-linked-list-by-swapping-nodes/
 
 	for (i = 0; i < size; i++) {
 		printf("%d;%s;%.2f;%.2f;%.2f;%s;%s\n", array[i].codigo, array[i].tipo, array[i].bateria, array[i].autonomia, array[i].custo, array[i].localizacao, array[i].estado);
 	}
+}
+
+
+void ordemDecrescente(Meio* inicio) {
+	
+	Meio* atual = inicio;
+	struct registo arr[100];
+	struct registo temp;
+
+
+	int i = 0, size = 0, j;
+
+ 	while (atual != NULL) {
+		
+		arr[i].codigo = atual->codigo;
+		strcpy(arr[i].tipo, atual->tipo); 
+		arr[i].bateria = atual->bateria; 
+		arr[i].autonomia = atual->autonomia;
+		arr[i].custo = atual->custo;
+		strcpy(arr[i].localizacao, atual->localizacao);
+		strcpy(arr[i].estado, atual->estado);  
+
+       atual = atual->seguinte; 
+	   i++;
+	}
+	size = i;
+
+	for (i = 0; i < (size - 1); i++) { 
+		for (j = 0; j < size - i - 1; j++) { 
+			if (arr[j].autonomia < arr[j + 1].autonomia) {
+				temp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = temp;
+			}
+		}
+	}
+
+	listarArray(arr, size); 
+
 }
 
 
@@ -292,17 +301,15 @@ int ficheiroBinario(Meio* inicio) {
 }
 
 
-void alugarMeio(Meio*  inicio, Cliente* begin, int nif) {
+void alugarMeio(Meio*  inicio, Cliente* begin, int nif, int cod) {
 	Meio* atual = inicio; 
- 	int cod;
-  
-	listarMeios(atual);   
-	printf("Introduza o codigo do meio que pretende alugar: ");
-	scanf("%d", &cod);
-
+     
 	if (existeMeio(atual, cod)) {
 		if (atual == NULL) return(NULL); 
-		else if ((atual->codigo == cod)) {   // caso o header tenha o codigo introduzido
+		else {
+			while ((atual != NULL) && (atual->codigo != cod)) {   // para encontrar o codigo introduzido
+				atual = atual->seguinte; 
+			}
 			if (strcmp(atual->estado, "Alugado") == 1) {
 
 				strcpy(atual->estado, "Alugado");
@@ -312,43 +319,19 @@ void alugarMeio(Meio*  inicio, Cliente* begin, int nif) {
 					while ((begin != NULL) && (begin->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
 						begin = begin->seguinte;
 					}
-					begin->saldo = begin->saldo - atual->custo;
-
+					if (begin->saldo >= atual->custo) {
+						begin->saldo = begin->saldo - atual->custo;
+					}
+					else printf("Saldo insuficiente para alugar o meio!");
 				}
-				FicheiroClientes(begin); 
-				FicheiroMeios(inicio); 
+
+				FicheiroClientes(begin);
+				FicheiroMeios(inicio);
 			}
 			else printf("Meio ja alugado!\n");
 		}
-		else {
-			while ((atual != NULL) && (atual->codigo != cod)) {   // para encontrar o codigo introduzido
-				atual = atual->seguinte; 
-			}
-			if (atual == NULL) return(inicio);
-			else {
-				if (strcmp(atual->estado, "Alugado") == 1) {
-
-					strcpy(atual->estado, "Alugado");
-
-					if (begin == NULL) return(NULL);
-					else {
-						while ((begin != NULL) && (begin->nif != nif)) {  //percorre a lista ligada até encontrar o codigo do meio
-							begin = begin->seguinte;
-						}
-						begin->saldo = begin->saldo - atual->custo;
-					}
-					
-					FicheiroClientes(begin); 
-					FicheiroMeios(inicio); 
-					
-				}
-				else printf("Meio ja alugado!\n");
-			}
-		}
-		
 	}
 	else printf("Codigo Errado!");
-
 }
 
 
@@ -361,7 +344,8 @@ void localizacao(Meio* inicio) {
 
 	while (inicio != NULL) {
 		if (strcmp(inicio->localizacao, loc) == 0) {
-			printf("%s\n", inicio->tipo);
+			printf("%d %s %.2f %.2f %.2f %s %s\n", inicio->codigo, inicio->tipo, 
+				inicio->bateria, inicio->autonomia, inicio->custo, inicio->localizacao, inicio->estado); 
 			b = 0;
 		}
 		inicio = inicio->seguinte;
@@ -370,3 +354,69 @@ void localizacao(Meio* inicio) {
 }
 
 
+void troca(Meio* aux1, Meio* aux2) {
+	Meio* temp = aux1->seguinte;
+	aux1->seguinte = aux2;
+	aux2->seguinte = temp;
+}
+
+void revBubblesort(Meio* inicio) {
+	int swapped, i;
+	Meio* ptr1;
+	Meio* lptr = NULL;
+
+	// Checking for empty list 
+	if (inicio == NULL) return;
+		
+
+	do
+	{
+		swapped = 0;
+		ptr1 = inicio;
+
+		while (ptr1->seguinte != lptr)
+		{
+			if (ptr1->autonomia < ptr1->seguinte->autonomia)
+			{
+				troca(ptr1, ptr1->seguinte); 
+				swapped = 1;
+			}
+			ptr1 = ptr1->seguinte;
+		}
+		lptr = ptr1;
+	} while (swapped);
+	
+	listarMeios(lptr); 
+}
+
+
+/*int bubbleSort(struct registo** head, int count)
+{
+	struct registo** h;
+	int i, j, swapped;
+
+	for (i = 0; i < (count - 1); i++) {
+
+		h = head;
+		swapped = 0;
+
+		for (j = 0; j < count - i - 1; j++) {
+
+			struct registo* p1 = *h;
+			struct registo* p2 = p1->seguinte; 
+
+			if (p1->autonomia < p2->autonomia) {
+
+				// update the link after swapping 
+				*h = troca(p1, p2);
+				swapped = 1;
+			}
+
+			h = &(*h)->seguinte;
+		}
+
+		// break if the loop ended without any swap 
+		if (swapped == 0)
+			break;
+	}
+}*/
