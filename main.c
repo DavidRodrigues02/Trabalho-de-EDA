@@ -27,7 +27,7 @@ int main() {
 	clientes = lerClientes();
 
 
-	novoVertice(&g, "palito-some-atum");
+	/*novoVertice(&g, "palito-some-atum");
 	novoVertice(&g, "moleza-avisou-boiar");
 	novoVertice(&g, "cita-noite-cercam");
 	novoVertice(&g, "farta-parou-ferro");
@@ -37,17 +37,20 @@ int main() {
 	criarAresta(g, "moleza-avisou-boiar", "farta-parou-ferro", 50);
 	criarAresta(g, "moleza-avisou-boiar", "cita-noite-cercam", 40);
 	criarAresta(g, "cita-noite-cercam", "palito-some-atum", 100);
-	criarAresta(g, "farta-parou-ferro", "cita-noite-cercam", 30); 
+	criarAresta(g, "farta-parou-ferro", "cita-noite-cercam", 30);*/
 
-	//listarAdjacentes(g, "palito-some-atum");
+	//FicheiroGrafo(g); 
+	//FicheiroAdjacentes(g);
+	g = lerGrafo();  
+	g = lerAdjacentes(g);
+	g = lerCodigosGrafo(g, meios);
+	listarAdjacentes(g, "palito-some-atum");
+	listarVertices(g); 
 
-	FicheiroGrafo(g);
-	FicheiroAdjacentes(g);
-	
 	struct registo array[100];
 	int escolha, opcao, cod, pin, nif, bool;
-	float bat, aut, saldo, custo;
-	char tipo[50], nomeGe[50], nomeCl[50], est[20], morada[50], loc[50];
+	float bat, aut, saldo, custo, distancia;
+	char tipo[50], nomeGe[50], nomeCl[50], est[20], morada[50], loc[50], geocodigo[50], origem[50], destino[50];
 
 	do {
 		printf("\tA U T E N T I C A C A O\n");
@@ -118,9 +121,40 @@ int main() {
 						scanf("%d", &nif);
 						clientes = RemoverCliente(clientes, nif); 
 						break;
-					case 11: localizacao(meios);
-						break;
+					case 11: localizacao(meios);break;
 					case 12: listarMeios(meios); break;
+					case 13: printf("Introduza a nova localizacao: \n");
+						getchar();
+						gets(geocodigo);
+						novoVertice(&g, geocodigo);
+						FicheiroGrafo(g);
+						break;
+					case 14: printf("Localizacao de origem: \n");
+						getchar();
+						gets(origem);
+						printf("Localizacao de destino: \n");
+						getchar();
+						gets(destino);
+						printf("Distancia: \n");
+						scanf("%d", &distancia);
+						if (existeVertice(g, origem) && existeVertice(g, destino)) criarAresta(g, origem, destino, distancia);
+						else printf("Localizacao nao encontrada!");
+						break;
+					case 15: printf("Insira a localizacao: \n");
+						getchar();
+						gets(geocodigo);
+						printf("Insira o codigo do meio: \n");
+						scanf("%d", &cod);
+						removerCodigo(g, cod);
+						inserirMeio(g, meios, geocodigo, cod);
+						FicheiroMeios(meios);
+						FicheiroCodigoGrafo(g);
+						break;
+					case 16: printf("Insira a localizacao: \n");
+						getchar();
+						gets(geocodigo);
+						listarMeiosGrafo(g, meios, geocodigo);
+						break;
 					}
 				} while (opcao != 0);
 			}
@@ -136,16 +170,19 @@ int main() {
 					opcao = menuCliente();
 					switch (opcao) {
 					case 1:listarMeios(meios); break;
-					case 2: //revBubblesort(meios);
-						ordemDecrescente(meios);    
-						
-						break;
+					case 2:ordemDecrescente(meios); break;
 					case 3:listarMeios(meios); 
 						printf("Introduza o codigo do meio que pretende alugar: \n");
 						scanf("%d", cod);
 						alugarMeio(meios, clientes, nif, cod); break; 
 					case 4: localizacao(meios); break;
 					case 5: clientes = alterarDadosCl(clientes, nif); break;
+					case 6: printf("Introduza a localizacao: \n");
+						getchar();
+						gets(geocodigo);
+						if (existeVertice(g, geocodigo)) listarAdjacentes(g, geocodigo);
+						else printf("Localizacao nao encontrada!");
+						break;
 					}
 				} while (opcao != 0);
 			}
