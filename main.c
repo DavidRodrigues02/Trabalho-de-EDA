@@ -48,7 +48,7 @@ int main() {
 	listarVertices(g); 
 
 	struct registo array[100];
-	int escolha, opcao, cod, pin, nif, bool;
+	int escolha, opcao, cod, pin, nif, bool, raio;
 	float bat, aut, saldo, custo, distancia;
 	char tipo[50], nomeGe[50], nomeCl[50], est[20], morada[50], loc[50], geocodigo[50], origem[50], destino[50];
 
@@ -183,6 +183,16 @@ int main() {
 						if (existeVertice(g, geocodigo)) listarAdjacentes(g, geocodigo);
 						else printf("Localizacao nao encontrada!");
 						break;
+					case 7: listarVertices(g); break;
+					case 8: printf("Introduza a localizacao onde se encontra: \n");
+						getchar();
+						gets(geocodigo);
+						printf("Introduza o meio que pretende utilizar: \n");
+						//getchar();
+						gets(tipo);
+						printf("Introduza o raio: \n");
+						scanf("%d", &raio);
+						meiosPerto(g, meios, geocodigo, raio, tipo);
 					}
 				} while (opcao != 0);
 			}

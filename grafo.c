@@ -204,7 +204,7 @@ void listarMeiosGrafo(Grafo g, Meio* meios, char geocodigo[]){
 			while ((meios != NULL) && (meios->codigo != aux->codigo)) meios = meios->seguinte;
 
 
-				printf("------------\nCodigo do meio: %d\nTransporte: %s\nBateria: %.2f\nAutonomia: %.2f\nCusto: %.2f\nEstado: %s\n----------------\n", aux->codigo, meios->tipo, meios->bateria, meios->autonomia, meios->custo, meios->estado); 
+				printf("----------------\nCodigo do meio: %d\nTransporte: %s\nBateria: %.2f\nAutonomia: %.2f\nCusto: %.2f\nEstado: %s\n----------------\n", aux->codigo, meios->tipo, meios->bateria, meios->autonomia, meios->custo, meios->estado); 
 				aux = aux->seguinte;
 			
 		}
@@ -310,6 +310,34 @@ int verificarCodigo(Grafo g, int codigo) {
 	return 0;
 }
 
-int meiosPerto(Grafo g, Meio* m, char localizacao[], int raio, char tipo[]) {
+void meiosPerto(Grafo g, Meio* m, char localizacao[], int raio, char tipo[]) {
+	int soma = 0;
+	Grafo inicio = g;
+	Grafo aux = g;
 
+	while ((g != NULL) && (strcmp(g->geocodigo, localizacao) != 0)) g = g->seguinte;
+
+	Adjacente adj = g->adjacentes;
+
+	while (adj != NULL) {
+		if ((adj->peso + soma) <= raio) { 
+			while ((aux != NULL) && (strcmp(aux->geocodigo, adj->geocodigo) != 0)) aux = aux->seguinte; 
+			MeiosCodigo cod = aux->meios;
+
+			printf("Caminho: %s \n", aux->geocodigo);
+
+			while (cod != NULL) {
+				listarCodigo(m, cod->codigo, tipo);
+
+				cod = cod->seguinte;
+			}
+
+			//int b = verificarMeio(m, tipo, aux->meios->codigo); 
+			//printf("%d", b);
+
+			soma = soma + adj->peso;
+			meiosPerto(inicio, m, aux->geocodigo, soma, tipo); 
+		}
+		adj = adj->seguinte;
+	}
 }

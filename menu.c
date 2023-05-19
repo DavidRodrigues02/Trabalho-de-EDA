@@ -40,6 +40,7 @@ int menuCliente() {
 	printf("5 - Alterar os seus dados\n");
 	printf("6 - Listar caminhos a partir de uma localizacao\n");
 	printf("7 - Listar localizacoes\n");
+	printf("8 - Listar meios num determinado raio\n");
 	printf("0 - Sair\n");
 	printf("Introduza a opcao:");
 	scanf("%d", &opcao);
