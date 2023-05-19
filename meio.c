@@ -353,70 +353,23 @@ void localizacao(Meio* inicio) {
 	if (b == 1) printf("Nenhum meio encontrado na localizacao pretendida");
 }
 
-
-void troca(Meio* aux1, Meio* aux2) {
-	Meio* temp = aux1->seguinte;
-	aux1->seguinte = aux2;
-	aux2->seguinte = temp;
-}
-
-void revBubblesort(Meio* inicio) {
-	int swapped, i;
-	Meio* ptr1;
-	Meio* lptr = NULL;
-
-	// Checking for empty list 
-	if (inicio == NULL) return;
-		
-
-	do
-	{
-		swapped = 0;
-		ptr1 = inicio;
-
-		while (ptr1->seguinte != lptr)
-		{
-			if (ptr1->autonomia < ptr1->seguinte->autonomia)
-			{
-				troca(ptr1, ptr1->seguinte); 
-				swapped = 1;
-			}
-			ptr1 = ptr1->seguinte;
+void listarCodigo(Meio* meios, int codigo, char transporte[]) {
+	while (meios != NULL) {
+		if ((meios->codigo == codigo) && (strcmp(meios->tipo, transporte) == 0)) {
+			printf("%d; %s; %.2f; %.2f; %.2f; %s; %s\n", meios->codigo, meios->tipo,
+				meios->bateria, meios->autonomia, meios->custo, meios->localizacao, meios->estado);
 		}
-		lptr = ptr1;
-	} while (swapped);
-	
-	listarMeios(lptr); 
-}
-
-
-/*int bubbleSort(struct registo** head, int count)
-{
-	struct registo** h;
-	int i, j, swapped;
-
-	for (i = 0; i < (count - 1); i++) {
-
-		h = head;
-		swapped = 0;
-
-		for (j = 0; j < count - i - 1; j++) {
-
-			struct registo* p1 = *h;
-			struct registo* p2 = p1->seguinte; 
-
-			if (p1->autonomia < p2->autonomia) {
-
-				// update the link after swapping 
-				*h = troca(p1, p2);
-				swapped = 1;
-			}
-
-			h = &(*h)->seguinte;
-		}
-
-		// break if the loop ended without any swap 
-		if (swapped == 0)
-			break;
+		meios = meios->seguinte;
 	}
-}*/
+}
+
+int verificarMeio(Meio* meios, char transporte[], int codigo) {
+	while (meios != NULL) {
+		if (meios->codigo == codigo) {
+			if (strcmp(meios->tipo, transporte) == 0) return 1;
+		}
+
+		meios = meios->seguinte;
+	}
+	return 0;
+}

@@ -89,3 +89,5 @@ Grafo lerCodigosGrafo(Grafo g, Meio* m);
 void removerCodigo(Grafo g, int codigo);
 
 int verificarCodigo(Grafo g, int codigo);
+
+void meiosPerto(Grafo g, Meio* m, char localizacao[], int raio, char tipo[]);

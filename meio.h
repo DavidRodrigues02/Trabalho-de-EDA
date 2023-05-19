@@ -69,5 +69,12 @@ void alugarMeio(Meio* inicio, Cliente* begin, int nif, int cod);
 */
 void localizacao(Meio* inicio);
 
-//void revBubblesort(Meio* inicio); 
-//int bubbleSort(struct registo** head, int count);
+/**
+*  Listar um determinado meio pelo seu código
+*/
+void listarCodigo(Meio* meios, int codigo, char transporte[]) ;
+
+/**
+*  Verificar o tipo de transporte
+*/
+int verificarMeio(Meio* meios, char transporte[], int codigo);
