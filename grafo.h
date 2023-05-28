@@ -1,25 +1,20 @@
 #pragma once
 #include "meio.h"
 
-typedef struct {
-	int vertices;
-	float matrizAdj[100][100];
-} *Matriz; 
-
-typedef struct registo2
+typedef struct adjacente 
 {
 	char geocodigo[40];
 	float peso;
 	struct registo2* seguinte;
 } *Adjacente;
 
-typedef struct registo3
+typedef struct codigos
 {
 	int codigo;
 	struct registo3* seguinte;
 } *MeiosCodigo;
 
-typedef struct registo1
+typedef struct grafo 
 {
 	char geocodigo[40];
 	Adjacente adjacentes;
@@ -31,7 +26,7 @@ typedef struct registo1
 /**
 *  Criar novo vértice para o grafo
 */
-int novoVertice(Grafo* g, char geocodigo[]);
+int novoVertice(Grafo* g, char geocodigo[]);      
 
 /**
 *  Verificar a existência de um vértice
@@ -61,7 +56,7 @@ int FicheiroGrafo(Grafo inicio);
 /**
 *  Armazenar informação do grafo num ficheiro binário
 */
-int ficheiroBinario(Grafo inicio);
+int grafoBinario(Grafo inicio);
 
 /**
 *  Armazenar os vértices adjacentes do grafo num ficheiro de texto
@@ -108,12 +103,7 @@ void removerCodigo(Grafo g, int codigo);
 */
 void meiosPerto(Grafo g, Meio* m, char localizacao[], float raio, char tipo[]);
 
-int contaVertices(Grafo g);
-
-void matrizInicial(Matriz matrizAdjacencia, int vertices);
-
-void matrizPeso(Grafo g, Matriz matrizAdj);
-
-void printMatriz(Matriz m);
-
-void matrizFinal(Grafo g, Matriz matriz);
+/**
+*  Função para a recolha dos meios com menos de 50% de bateria
+*/
+void camiao(Grafo g, Meio* meios);

@@ -14,42 +14,17 @@ int main() {
 	Gestores* gestores = NULL;
 	Cliente* clientes = NULL;
 	Grafo g = NULL;
-	Matriz m = NULL;
 
-	//meios = novoMeio(meios, 5, "carrinha", 95, 100, "disponivel");
-	//meios = novoMeio(meios, 6, "skate", 28, 20, "disponivel");
 	meios = lerMeios();
 
-	//gestores = novoGestor(gestores, "Daniel", 1234); 
-	//gestores = novoGestor(gestores, "Henrique", 5678);
 	gestores = lerGestores();
 
-	//clientes = novoCliente(clientes, 123456789, 50, "Paulo", "Lisboa");  
-	//clientes = novoCliente(clientes, 987654321, 80, "Carolina", "Porto"); 
 	clientes = lerClientes();
-
-
-	/*novoVertice(&g, "palito-some-atum");
-	novoVertice(&g, "moleza-avisou-boiar");
-	novoVertice(&g, "cita-noite-cercam");
-	novoVertice(&g, "farta-parou-ferro");
-
-	criarAresta(g, "palito-some-atum", "moleza-avisou-boiar", 20);
-	criarAresta(g, "palito-some-atum", "farta-parou-ferro", 15);
-	criarAresta(g, "moleza-avisou-boiar", "farta-parou-ferro", 50);
-	criarAresta(g, "moleza-avisou-boiar", "cita-noite-cercam", 40);
-	criarAresta(g, "cita-noite-cercam", "palito-some-atum", 100);
-	criarAresta(g, "farta-parou-ferro", "cita-noite-cercam", 30);*/
-
-	//FicheiroGrafo(g); 
-	//FicheiroAdjacentes(g);
 	
-	g = lerGrafo();  
+	g = lerGrafo();   
 	g = lerAdjacentes(g);
-	g = lerCodigosGrafo(g, meios);
-	listarAdjacentes(g, "palito-some-atum");
-	listarVertices(g); 
-	ficheiroBinario(g);
+	g = lerCodigosGrafo(g, meios);  
+	grafoBinario(g); 
 
 	struct registo array[100];
 	int escolha, opcao, cod, pin, nif, bool, v;
@@ -120,7 +95,10 @@ int main() {
 						break;
 					case 7: listarGestores(gestores); break;
 					case 8: listarMeios(meios);
-						meios = alterarDados(meios);  
+						printf("Insira o codigo do meio que prentende alterar dados: \n");
+						scanf("%d", &cod);
+						meios = alterarDados(meios, cod);
+						FicheiroMeios(meios);
 						break;
 					case 9: listarClientes(clientes); break;
 					case 10: printf("Insira o NIF do cliente que pretende remover: \n");
@@ -145,6 +123,7 @@ int main() {
 						scanf("%d", &distancia);
 						if (existeVertice(g, origem) && existeVertice(g, destino)) criarAresta(g, origem, destino, distancia);
 						else printf("Localizacao nao encontrada!");
+						FicheiroAdjacentes(g); 
 						break;
 					case 15: printf("Insira a localizacao: \n");
 						getchar();
@@ -160,12 +139,6 @@ int main() {
 						getchar();
 						gets(geocodigo);
 						listarMeiosGrafo(g, meios, geocodigo);
-						break;
-					case 17: v = contaVertices(g); 
-
-						matrizInicial(m, v);
-						matrizPeso(g, m); 
-						printMatriz(m); 
 						break;
 					}
 				} while (opcao != 0);

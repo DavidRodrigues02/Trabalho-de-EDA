@@ -6,7 +6,7 @@
 #include "meio.h"
 
 int novoVertice(Grafo* g, char geocodigo[]) {
-	Grafo novo = malloc(sizeof(struct registo1));  
+	Grafo novo = malloc(sizeof(struct grafo));  
 
 	if (novo != NULL) {
 		strcpy(novo->geocodigo, geocodigo);
@@ -33,7 +33,7 @@ int criarAresta(Grafo g, char origem[], char destino[], float distancia) {
 
 	if (existeVertice(g, origem) && existeVertice(g, destino)) {
 		while (strcmp(g->geocodigo, origem) != 0) g = g->seguinte;
-		novo = malloc(sizeof(struct registo1));
+		novo = malloc(sizeof(struct grafo)); 
 
 		if (novo != NULL) {
 			strcpy(novo->geocodigo, destino);
@@ -90,7 +90,7 @@ int FicheiroGrafo(Grafo inicio) {
 	else return(0);
 }
 
-int ficheiroBinario(Grafo inicio) {
+int grafoBinario(Grafo inicio) {
 	FILE* fp;
 	fp = fopen("grafoBinario.bin", "wb");
 
@@ -98,7 +98,7 @@ int ficheiroBinario(Grafo inicio) {
 		Grafo aux = inicio;
 
 		while (aux != NULL) {
-			fwrite(&aux, sizeof(struct registo1), 1, fp);
+			fwrite(&aux, sizeof(struct grafo), 1, fp); 
 			aux = aux->seguinte;
 		}
 		fclose(fp);
@@ -150,7 +150,7 @@ Grafo lerGrafo()
 	while (fscanf(fp, "%s\n", geocodigo) == 1)
 	{	
 		
-		novo = malloc(sizeof(struct registo1));
+		novo = malloc(sizeof(struct grafo)); 
 		if (novo == NULL) { 
 			printf("Erro ao alocar memoria.");
 			return NULL;
@@ -196,7 +196,7 @@ int inserirMeioGrafo(Grafo g, Meio* m, char geocodigo[], int codigoMeio){
 	if (g == NULL) return(0);
 	else {
 		
-		MeiosCodigo novo = malloc(sizeof(struct registo3));
+		MeiosCodigo novo = malloc(sizeof(struct codigos));   
 		novo->codigo = codigoMeio;
 		novo->seguinte = g->meios;
 		g->meios = novo;
@@ -207,6 +207,8 @@ int inserirMeioGrafo(Grafo g, Meio* m, char geocodigo[], int codigoMeio){
 }
 
 void listarMeiosGrafo(Grafo g, Meio* meios, char geocodigo[]){
+	Meio* atual = meios; 
+	Meio* inicio = meios;  
 
 	while ((g != NULL) && (strcmp(g->geocodigo, geocodigo) != 0)) g = g->seguinte;
 
@@ -216,12 +218,12 @@ void listarMeiosGrafo(Grafo g, Meio* meios, char geocodigo[]){
 		if (aux == NULL) printf("Sem meios de transporte!\n");
 		else while (aux != NULL)
 		{
-			while ((meios != NULL) && (meios->codigo != aux->codigo)) meios = meios->seguinte;  //procura na lista dos meios o código obtido a partir do grafo
+			while ((atual != NULL) && (atual->codigo != aux->codigo)) atual = atual->seguinte;  //procura na lista dos meios o código obtido a partir do grafo
 
 
 				printf("----------------\nCodigo do meio: %d\nTransporte: %s\nBateria: %.2f\nAutonomia: %.2f\nCusto: %.2f\nEstado: %s\n----------------\n", aux->codigo, meios->tipo, meios->bateria, meios->autonomia, meios->custo, meios->estado); 
 				aux = aux->seguinte;
-			
+				atual = inicio;
 		}
 	}
 	else printf("Geocodigo inexistente!\n");
@@ -308,11 +310,12 @@ void meiosPerto(Grafo g, Meio* m, char localizacao[], float raio, char tipo[]) {
 
 	while ((g != NULL) && (strcmp(g->geocodigo, localizacao) != 0)) g = g->seguinte;   // percorre a lista dos vértices até encontrar a localizacao do cliente
 	
-	//MeiosCodigo inicial = g->meios;
-	//while (inicial != NULL) {
-	//	listarCodigo(m, inicial->codigo, tipo);
-	//	inicial = inicial->seguinte;
-	//}
+	MeiosCodigo inicial = g->meios;
+
+	while (inicial != NULL) { 
+		listarCodigo(m, inicial->codigo, tipo); 
+		inicial = inicial->seguinte; 
+	}
 
 	Adjacente adj = g->adjacentes;   
 
@@ -327,99 +330,43 @@ void meiosPerto(Grafo g, Meio* m, char localizacao[], float raio, char tipo[]) {
 																										 // para verificar se o meio é o pretendido
 				
 			MeiosCodigo cod = aux->meios; 																
-			 
-			printf("Caminho: %s; Distancia: %2.f \n", aux->geocodigo, adj->peso);   
+			
+
+			printf("Caminho: %s; Distancia: %2.f \n", aux->geocodigo, adj->peso); 
+
 
 			while (cod != NULL) {                       // percorre a lista ligada dos códigos existentes nessa localizacao.
 				listarCodigo(m, cod->codigo, tipo);     // esta função percorre a lista dos meios até encontrar o meio prentendido para depois mostrar toda a informação do mesmo ao cliente
 				
 				cod = cod->seguinte;
 			}
+
 			soma = raio - adj->peso;   //armazena o raio
 			meiosPerto(inicio, m, aux->geocodigo, soma, tipo);
 			printf("FIM DO CAMINHO\n");
 
-		}
+		} 
+
+
 		adj = adj->seguinte; 
 
 	}
 	
 }
 
-int contaVertices(Grafo g) {
-	int n = 0;
-	while (g != NULL) {
-		n++;
-		g = g->seguinte;
-	}
-	return n; 
-}
 
-void matrizInicial(Matriz matrizAdjacencia, int vertices) {
-	int i, j;
-	matrizAdjacencia->vertices = vertices;
-
-	for (i = 0; i < vertices; i++) {
-		for (j = 0; j < vertices; j++) {
-			matrizAdjacencia->matrizAdj[i][j] = 0;
-		}
-	}
-}
-
-void matrizPeso(Grafo g, Matriz matrizAdj) {
+void camiao(Grafo g, Meio* meios) {
 	Grafo aux = g;
-	int i, j;
+	char veiculos[50];
+	int i = 0;
 
-	while (aux != NULL) {
-		Adjacente adj = aux->adjacentes;
-		while (adj != NULL) {
-			for (i = 0; i < matrizAdj->vertices; i++) {
-				if (strcmp(aux->geocodigo, g[i].geocodigo) == 0) {
-					for (j = 0; j < matrizAdj->vertices; j++) {
-						if (strcmp(adj->geocodigo, g[j].geocodigo) == 0) {
-							matrizAdj->matrizAdj[i][j] = adj->peso;
-							break;
-						}
-					}
-					break;
-				}
-			}
-			adj = adj->seguinte;
-		}
-		aux = aux->seguinte;
-	}
-}
-
-void printMatriz(Matriz m) {
-	int i, j;
-
-	for (i = 0; i < m->vertices; i++) {
-		for (j = 0; j < m->vertices; j++) {
-			printf("%f", m->matrizAdj[i][j]);
-		}
-		printf("\n");
-	}
-}
-
-void matrizFinal(Grafo g, Matriz matriz) {
-	int v = contaVertices(g);
-
-	matrizInicial(matriz, v);
-	matrizPeso(g, matriz);
-	printMatriz(matriz);
-}
-
-void camiao(Grafo g, Meio* meios, char origem[50]) {
-	Grafo aux = g;
-
-
-	while (g != NULL) {
-		while ((meios != NULL) && (meios->codigo != g->meios->codigo)) meios = meios->seguinte;
+	while (meios != NULL) {
 		if (meios->bateria < 50) {
-
+			veiculos[i] = meios->codigo;
+			i++;
 		}
-			
+		meios = meios->seguinte;
 	}
 
-	
+	// Inacabada
 }

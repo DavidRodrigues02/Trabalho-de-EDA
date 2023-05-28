@@ -78,56 +78,14 @@ Meio* RemoverMeio(Meio* inicio, int cod) {
 
 
 // procurar o node pretendido e alterar os dados dentro dele
-Meio* alterarDados(Meio* inicio) {
+Meio* alterarDados(Meio* inicio, int cod) {
 	Meio* atual = inicio;
 
-	int cod, opcao; 
+	int opcao; 
 	float bat, aut, custo;
 	char tipo[50], est[50], loc[50];
-
-	printf("Insira o codigo do meio que prentende alterar dados: \n");
-	scanf("%d", &cod); 
-
-	
+   
 	if (atual == NULL) return(NULL);
-	//else if (atual->codigo == cod) {   // caso o header tenha o codigo introduzido
-	//	do {
-	//		printf("1 - Tipo\n2 - Bateria\n3 - Autonomia\n 4 - Custo\n5 - Estado\n6 - Localizacao\n0 - Sair\n");
-	//		printf("Escolha a opcao : \n");
-	//		scanf("%d", &opcao);
-
-	//		switch (opcao) {
-	//		case 1: printf("Novo tipo: ");
-	//			getchar();  
-	//			gets(tipo); 
-	//			strcpy(atual->tipo, tipo);
-	//			break;
-	//		case 2: printf("Bateria: ");
-	//			scanf("%f", &bat);
-	//			atual->bateria = bat;
-	//			break;
-	//		case 3: printf("Autonomia: ");
-	//			scanf("%f", &aut);
-	//			atual->autonomia = aut;
-	//			break;
-	//		case 4: printf("Custo: ");
-	//			scanf("%f", &custo);
-	//			atual->custo = custo;
-	//			break;
-	//		case 5: printf("Novo estado do meio: ");
-	//			getchar();
-	//			gets(est);
-	//			strcpy(atual->estado, est);
-	//			break;
-	//		case 6: printf("Nova localizacao do meio: ");
-	//			getchar();
-	//			gets(loc);
-	//			strcpy(atual->localizacao, loc);
-	//			break;
-	//		}
-	//	} while (opcao != 0);
-	//	
-	//}
 	else {
 		while ((atual != NULL) && (atual->codigo != cod)) {   // para encontrar o codigo introduzido
 			atual = atual->seguinte;
@@ -172,7 +130,6 @@ Meio* alterarDados(Meio* inicio) {
 
 		}
 	}
-	FicheiroMeios(atual);
 	return (atual);
 }
 
