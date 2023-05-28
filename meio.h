@@ -37,7 +37,7 @@ Meio* RemoverMeio(Meio* inicio, int cod);
 /**
 *  Função para alterar os dados de algum dos meios existentes
 */
-Meio* alterarDados(Meio* inicio);
+Meio* alterarDados(Meio* inicio, int cod);
 
 /**
 *  Cria ficheiro de texto dos meios
