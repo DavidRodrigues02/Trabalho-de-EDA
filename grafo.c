@@ -90,6 +90,23 @@ int FicheiroGrafo(Grafo inicio) {
 	else return(0);
 }
 
+int ficheiroBinario(Grafo inicio) {
+	FILE* fp;
+	fp = fopen("grafoBinario.bin", "wb");
+
+	if (fp != NULL) {
+		Grafo aux = inicio;
+
+		while (aux != NULL) {
+			fwrite(&aux, sizeof(struct registo1), 1, fp);
+			aux = aux->seguinte;
+		}
+		fclose(fp);
+		return(1);
+	}
+	else return(0);
+}
+
 
 int FicheiroAdjacentes(Grafo inicio) {
 	FILE* fp;
@@ -123,8 +140,6 @@ Grafo lerGrafo()
 	char origem[50];
 	Grafo aux = NULL;
 	Grafo novo; 
-	//Adjacente aux2 = NULL;
-	//Adjacente adj;
 
 	fp = fopen("vertices.txt", "r");
 	if (fp == NULL) {
@@ -174,7 +189,7 @@ Grafo lerAdjacentes(Grafo g) {
 	return g;  
 }
 
-int inserirMeio(Grafo g, Meio* m, char geocodigo[], int codigoMeio){
+int inserirMeioGrafo(Grafo g, Meio* m, char geocodigo[], int codigoMeio){
 
 	while ((g != NULL) && (strcmp(g->geocodigo, geocodigo) != 0)) g = g->seguinte;
 
@@ -201,7 +216,7 @@ void listarMeiosGrafo(Grafo g, Meio* meios, char geocodigo[]){
 		if (aux == NULL) printf("Sem meios de transporte!\n");
 		else while (aux != NULL)
 		{
-			while ((meios != NULL) && (meios->codigo != aux->codigo)) meios = meios->seguinte;
+			while ((meios != NULL) && (meios->codigo != aux->codigo)) meios = meios->seguinte;  //procura na lista dos meios o código obtido a partir do grafo
 
 
 				printf("----------------\nCodigo do meio: %d\nTransporte: %s\nBateria: %.2f\nAutonomia: %.2f\nCusto: %.2f\nEstado: %s\n----------------\n", aux->codigo, meios->tipo, meios->bateria, meios->autonomia, meios->custo, meios->estado); 
@@ -212,18 +227,6 @@ void listarMeiosGrafo(Grafo g, Meio* meios, char geocodigo[]){
 	else printf("Geocodigo inexistente!\n");
 }
 
-Meio* alterarLocalizacao(Meio* meios, char geocodigo[], int codigo) {
-	Meio* atual = meios;
-
-		while ((atual != NULL) && (atual->codigo != codigo)) atual = atual->seguinte;  // para encontrar o codigo introduzido pelo utilizador
-		
-		if (atual != NULL) {
-			strcpy(atual->localizacao, geocodigo);
-			
-		}
-		 
-		return atual;
-}
 
 int FicheiroCodigoGrafo(Grafo inicio) {
 	FILE* fp; 
@@ -262,8 +265,8 @@ Grafo lerCodigosGrafo(Grafo g, Meio* m) {
 
 	while (fscanf(fp, "%[^;];%d\n", geocodigo, &codigo) == 2) {
 
-		inserirMeio(g, m, geocodigo, codigo);
-
+		inserirMeioGrafo(g, m, geocodigo, codigo); 
+		 
 	}
 	fclose(fp);
 
@@ -297,47 +300,126 @@ void removerCodigo(Grafo g, int codigo) {
 }
 
 
-int verificarCodigo(Grafo g, int codigo) {  
-	MeiosCodigo aux = g->meios;
 
-	while (g != NULL) {
-		while (aux != NULL) {
-			if (aux->codigo == codigo) return 1;
-			else aux = aux->seguinte;
-		}
-		g = g->seguinte;
-	} 
-	return 0;
-}
-
-void meiosPerto(Grafo g, Meio* m, char localizacao[], int raio, char tipo[]) {
-	int soma = 0;
+void meiosPerto(Grafo g, Meio* m, char localizacao[], float raio, char tipo[]) {
+	int soma;
 	Grafo inicio = g;
-	Grafo aux = g;
+	Grafo aux;
 
-	while ((g != NULL) && (strcmp(g->geocodigo, localizacao) != 0)) g = g->seguinte;
+	while ((g != NULL) && (strcmp(g->geocodigo, localizacao) != 0)) g = g->seguinte;   // percorre a lista dos vértices até encontrar a localizacao do cliente
+	
+	//MeiosCodigo inicial = g->meios;
+	//while (inicial != NULL) {
+	//	listarCodigo(m, inicial->codigo, tipo);
+	//	inicial = inicial->seguinte;
+	//}
 
-	Adjacente adj = g->adjacentes;
+	Adjacente adj = g->adjacentes;   
+
+	printf("Localizacao atual: %s ---> ", g->geocodigo); 
 
 	while (adj != NULL) {
-		if ((adj->peso + soma) <= raio) { 
-			while ((aux != NULL) && (strcmp(aux->geocodigo, adj->geocodigo) != 0)) aux = aux->seguinte; 
-			MeiosCodigo cod = aux->meios;
+		if ((adj->peso) <= raio) { 
+			aux = inicio;
 
-			printf("Caminho: %s \n", aux->geocodigo);
+			while ((aux != NULL) && (strcmp(aux->geocodigo, adj->geocodigo) != 0)) aux = aux->seguinte;  //ciclo para encontrar novamente na lista dos vértices
+																										 //o geocodigo do vertice para adjacente
+																										 // para verificar se o meio é o pretendido
+				
+			MeiosCodigo cod = aux->meios; 																
+			 
+			printf("Caminho: %s; Distancia: %2.f \n", aux->geocodigo, adj->peso);   
 
-			while (cod != NULL) {
-				listarCodigo(m, cod->codigo, tipo);
-
+			while (cod != NULL) {                       // percorre a lista ligada dos códigos existentes nessa localizacao.
+				listarCodigo(m, cod->codigo, tipo);     // esta função percorre a lista dos meios até encontrar o meio prentendido para depois mostrar toda a informação do mesmo ao cliente
+				
 				cod = cod->seguinte;
 			}
+			soma = raio - adj->peso;   //armazena o raio
+			meiosPerto(inicio, m, aux->geocodigo, soma, tipo);
+			printf("FIM DO CAMINHO\n");
 
-			//int b = verificarMeio(m, tipo, aux->meios->codigo); 
-			//printf("%d", b);
-
-			soma = soma + adj->peso;
-			meiosPerto(inicio, m, aux->geocodigo, soma, tipo); 
 		}
-		adj = adj->seguinte;
+		adj = adj->seguinte; 
+
 	}
+	
+}
+
+int contaVertices(Grafo g) {
+	int n = 0;
+	while (g != NULL) {
+		n++;
+		g = g->seguinte;
+	}
+	return n; 
+}
+
+void matrizInicial(Matriz matrizAdjacencia, int vertices) {
+	int i, j;
+	matrizAdjacencia->vertices = vertices;
+
+	for (i = 0; i < vertices; i++) {
+		for (j = 0; j < vertices; j++) {
+			matrizAdjacencia->matrizAdj[i][j] = 0;
+		}
+	}
+}
+
+void matrizPeso(Grafo g, Matriz matrizAdj) {
+	Grafo aux = g;
+	int i, j;
+
+	while (aux != NULL) {
+		Adjacente adj = aux->adjacentes;
+		while (adj != NULL) {
+			for (i = 0; i < matrizAdj->vertices; i++) {
+				if (strcmp(aux->geocodigo, g[i].geocodigo) == 0) {
+					for (j = 0; j < matrizAdj->vertices; j++) {
+						if (strcmp(adj->geocodigo, g[j].geocodigo) == 0) {
+							matrizAdj->matrizAdj[i][j] = adj->peso;
+							break;
+						}
+					}
+					break;
+				}
+			}
+			adj = adj->seguinte;
+		}
+		aux = aux->seguinte;
+	}
+}
+
+void printMatriz(Matriz m) {
+	int i, j;
+
+	for (i = 0; i < m->vertices; i++) {
+		for (j = 0; j < m->vertices; j++) {
+			printf("%f", m->matrizAdj[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+void matrizFinal(Grafo g, Matriz matriz) {
+	int v = contaVertices(g);
+
+	matrizInicial(matriz, v);
+	matrizPeso(g, matriz);
+	printMatriz(matriz);
+}
+
+void camiao(Grafo g, Meio* meios, char origem[50]) {
+	Grafo aux = g;
+
+
+	while (g != NULL) {
+		while ((meios != NULL) && (meios->codigo != g->meios->codigo)) meios = meios->seguinte;
+		if (meios->bateria < 50) {
+
+		}
+			
+	}
+
+	
 }

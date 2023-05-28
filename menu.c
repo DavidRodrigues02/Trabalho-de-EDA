@@ -21,6 +21,7 @@ int menuGestor() {
 	printf("14 - Nova aresta\n");
 	printf("15 - Inserir meio numa localizacao\n");
 	printf("16 - Listar meios contidos numa localizacao \n");
+	printf("17 - Matriz de adjacencia \n");
 	printf("0 - Sair\n");
 	printf("Introduza a opcao:");
 	scanf("%d", &opcao);

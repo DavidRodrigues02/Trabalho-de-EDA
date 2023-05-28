@@ -1,6 +1,11 @@
 #pragma once
 #include "meio.h"
 
+typedef struct {
+	int vertices;
+	float matrizAdj[100][100];
+} *Matriz; 
+
 typedef struct registo2
 {
 	char geocodigo[40];
@@ -21,6 +26,7 @@ typedef struct registo1
 	MeiosCodigo meios;
 	struct registo1* seguinte;
 } *Grafo;
+
 
 /**
 *  Criar novo vértice para o grafo
@@ -53,6 +59,11 @@ void listarVertices(Grafo g);
 int FicheiroGrafo(Grafo inicio);
 
 /**
+*  Armazenar informação do grafo num ficheiro binário
+*/
+int ficheiroBinario(Grafo inicio);
+
+/**
 *  Armazenar os vértices adjacentes do grafo num ficheiro de texto
 */
 int FicheiroAdjacentes(Grafo inicio);
@@ -70,7 +81,7 @@ Grafo lerAdjacentes(Grafo g);
 /**
 *  Inserir meio numa determinada localização
 */
-int inserirMeio(Grafo g, Meio* meios, char geocodigo[], int codigoMeio);
+int inserirMeioGrafo(Grafo g, Meio* meios, char geocodigo[], int codigoMeio);
 
 /**
 *  Listar todos meios existentes numa localização
@@ -78,16 +89,31 @@ int inserirMeio(Grafo g, Meio* meios, char geocodigo[], int codigoMeio);
 void listarMeiosGrafo(Grafo g, Meio* meios, char geocodigo[]);
 
 /**
-*  Alterar a localização do meio na estrutura dos Meios 
+*  Armazena os códigos dos meios e as respetivas localizações
 */
-Meio* alterarLocalizacao(Meio* meios, char geocodigo[], int codigo);
-
 int FicheiroCodigoGrafo(Grafo inicio);
 
+/**
+*  Lê os códigos para o grafo
+*/
 Grafo lerCodigosGrafo(Grafo g, Meio* m);
 
+/**
+*  Remove o código de uma localização
+*/
 void removerCodigo(Grafo g, int codigo);
 
-int verificarCodigo(Grafo g, int codigo);
+/**
+*  Recebe a localização do cliente, o meio que pretende procurar e o raio. Lista o tipo de meio que encontra nesse raio 
+*/
+void meiosPerto(Grafo g, Meio* m, char localizacao[], float raio, char tipo[]);
 
-void meiosPerto(Grafo g, Meio* m, char localizacao[], int raio, char tipo[]);
+int contaVertices(Grafo g);
+
+void matrizInicial(Matriz matrizAdjacencia, int vertices);
+
+void matrizPeso(Grafo g, Matriz matrizAdj);
+
+void printMatriz(Matriz m);
+
+void matrizFinal(Grafo g, Matriz matriz);

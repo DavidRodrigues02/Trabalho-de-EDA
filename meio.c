@@ -90,44 +90,44 @@ Meio* alterarDados(Meio* inicio) {
 
 	
 	if (atual == NULL) return(NULL);
-	else if (atual->codigo == cod) {   // caso o header tenha o codigo introduzido
-		do {
-			printf("1 - Tipo\n2 - Bateria\n3 - Autonomia\n 4 - Custo\n5 - Estado\n6 - Localizacao\n0 - Sair\n");
-			printf("Escolha a opcao : \n");
-			scanf("%d", &opcao);
+	//else if (atual->codigo == cod) {   // caso o header tenha o codigo introduzido
+	//	do {
+	//		printf("1 - Tipo\n2 - Bateria\n3 - Autonomia\n 4 - Custo\n5 - Estado\n6 - Localizacao\n0 - Sair\n");
+	//		printf("Escolha a opcao : \n");
+	//		scanf("%d", &opcao);
 
-			switch (opcao) {
-			case 1: printf("Novo tipo: ");
-				getchar();  
-				gets(tipo); 
-				strcpy(atual->tipo, tipo);
-				break;
-			case 2: printf("Bateria: ");
-				scanf("%f", &bat);
-				atual->bateria = bat;
-				break;
-			case 3: printf("Autonomia: ");
-				scanf("%f", &aut);
-				atual->autonomia = aut;
-				break;
-			case 4: printf("Custo: ");
-				scanf("%f", &custo);
-				atual->custo = custo;
-				break;
-			case 5: printf("Novo estado do meio: ");
-				getchar();
-				gets(est);
-				strcpy(atual->estado, est);
-				break;
-			case 6: printf("Nova localizacao do meio: ");
-				getchar();
-				gets(loc);
-				strcpy(atual->localizacao, loc);
-				break;
-			}
-		} while (opcao != 0);
-		
-	}
+	//		switch (opcao) {
+	//		case 1: printf("Novo tipo: ");
+	//			getchar();  
+	//			gets(tipo); 
+	//			strcpy(atual->tipo, tipo);
+	//			break;
+	//		case 2: printf("Bateria: ");
+	//			scanf("%f", &bat);
+	//			atual->bateria = bat;
+	//			break;
+	//		case 3: printf("Autonomia: ");
+	//			scanf("%f", &aut);
+	//			atual->autonomia = aut;
+	//			break;
+	//		case 4: printf("Custo: ");
+	//			scanf("%f", &custo);
+	//			atual->custo = custo;
+	//			break;
+	//		case 5: printf("Novo estado do meio: ");
+	//			getchar();
+	//			gets(est);
+	//			strcpy(atual->estado, est);
+	//			break;
+	//		case 6: printf("Nova localizacao do meio: ");
+	//			getchar();
+	//			gets(loc);
+	//			strcpy(atual->localizacao, loc);
+	//			break;
+	//		}
+	//	} while (opcao != 0);
+	//	
+	//}
 	else {
 		while ((atual != NULL) && (atual->codigo != cod)) {   // para encontrar o codigo introduzido
 			atual = atual->seguinte;
@@ -235,9 +235,6 @@ Meio* lerMeios()
 
 void listarArray(struct registo array[], int size) {
 	int i;
-	// size = sizeof(array) / sizeof(array[0]);  
-	// https://www.prepbytes.com/blog/linked-list/bubble-sort-for-linked-list-by-swapping-nodes/
-
 	for (i = 0; i < size; i++) {
 		printf("%d;%s;%.2f;%.2f;%.2f;%s;%s\n", array[i].codigo, array[i].tipo, array[i].bateria, array[i].autonomia, array[i].custo, array[i].localizacao, array[i].estado);
 	}
@@ -354,13 +351,16 @@ void localizacao(Meio* inicio) {
 }
 
 void listarCodigo(Meio* meios, int codigo, char transporte[]) {
+	
 	while (meios != NULL) {
 		if ((meios->codigo == codigo) && (strcmp(meios->tipo, transporte) == 0)) {
 			printf("%d; %s; %.2f; %.2f; %.2f; %s; %s\n", meios->codigo, meios->tipo,
 				meios->bateria, meios->autonomia, meios->custo, meios->localizacao, meios->estado);
+			
 		}
 		meios = meios->seguinte;
 	}
+	
 }
 
 int verificarMeio(Meio* meios, char transporte[], int codigo) {
@@ -372,4 +372,17 @@ int verificarMeio(Meio* meios, char transporte[], int codigo) {
 		meios = meios->seguinte;
 	}
 	return 0;
+}
+
+Meio* alterarLocalizacao(Meio* meios, char geocodigo[], int codigo) {
+	Meio* atual = meios;
+
+	while ((atual != NULL) && (atual->codigo != codigo)) atual = atual->seguinte;  // para encontrar o codigo introduzido pelo utilizador
+
+	if (atual != NULL) {
+		strcpy(atual->localizacao, geocodigo);
+
+	}
+
+	return atual;
 }

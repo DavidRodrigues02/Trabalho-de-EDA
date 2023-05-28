@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
-#include<string.h>
+#include <string.h>
+#include <stdlib.h>
 #include "meio.h"
 #include "ClientesGestores.h"
 #include "autenticacao.h"
@@ -13,6 +14,7 @@ int main() {
 	Gestores* gestores = NULL;
 	Cliente* clientes = NULL;
 	Grafo g = NULL;
+	Matriz m = NULL;
 
 	//meios = novoMeio(meios, 5, "carrinha", 95, 100, "disponivel");
 	//meios = novoMeio(meios, 6, "skate", 28, 20, "disponivel");
@@ -41,15 +43,17 @@ int main() {
 
 	//FicheiroGrafo(g); 
 	//FicheiroAdjacentes(g);
+	
 	g = lerGrafo();  
 	g = lerAdjacentes(g);
 	g = lerCodigosGrafo(g, meios);
 	listarAdjacentes(g, "palito-some-atum");
 	listarVertices(g); 
+	ficheiroBinario(g);
 
 	struct registo array[100];
-	int escolha, opcao, cod, pin, nif, bool, raio;
-	float bat, aut, saldo, custo, distancia;
+	int escolha, opcao, cod, pin, nif, bool, v;
+	float bat, aut, saldo, custo, distancia, raio;
 	char tipo[50], nomeGe[50], nomeCl[50], est[20], morada[50], loc[50], geocodigo[50], origem[50], destino[50];
 
 	do {
@@ -89,6 +93,8 @@ int main() {
 
 						meios = novoMeio(meios, cod, tipo, bat, aut, est, loc, custo);
 						FicheiroMeios(meios);
+						inserirMeioGrafo(g, meios, loc, cod);
+						FicheiroCodigoGrafo(g);
 						break;
 					case 2: listarMeios(meios); 
 						printf("Codigo do meio que pretende remover: ");
@@ -146,7 +152,7 @@ int main() {
 						printf("Insira o codigo do meio: \n");
 						scanf("%d", &cod);
 						removerCodigo(g, cod);
-						inserirMeio(g, meios, geocodigo, cod);
+						inserirMeioGrafo(g, meios, geocodigo, cod);
 						FicheiroMeios(meios);
 						FicheiroCodigoGrafo(g);
 						break;
@@ -154,6 +160,12 @@ int main() {
 						getchar();
 						gets(geocodigo);
 						listarMeiosGrafo(g, meios, geocodigo);
+						break;
+					case 17: v = contaVertices(g); 
+
+						matrizInicial(m, v);
+						matrizPeso(g, m); 
+						printMatriz(m); 
 						break;
 					}
 				} while (opcao != 0);
@@ -191,8 +203,9 @@ int main() {
 						//getchar();
 						gets(tipo);
 						printf("Introduza o raio: \n");
-						scanf("%d", &raio);
+						scanf("%f", &raio);
 						meiosPerto(g, meios, geocodigo, raio, tipo);
+						break;
 					}
 				} while (opcao != 0);
 			}

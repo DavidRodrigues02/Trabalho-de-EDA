@@ -72,9 +72,14 @@ void localizacao(Meio* inicio);
 /**
 *  Listar um determinado meio pelo seu código
 */
-void listarCodigo(Meio* meios, int codigo, char transporte[]) ;
+void listarCodigo(Meio* meios, int codigo, char transporte[]);
 
 /**
 *  Verificar o tipo de transporte
 */
 int verificarMeio(Meio* meios, char transporte[], int codigo);
+
+/**
+*  Alterar a localização do meio na estrutura dos Meios
+*/
+Meio* alterarLocalizacao(Meio* meios, char geocodigo[], int codigo);
